@@ -1,104 +1,81 @@
-# Tula's International School (TIS) - Modern Homepage Redesign
+# Tula's International School (TIS) - Modern Homepage
 
-A production-ready redesign of the **Tula's International School** official homepage ([https://tis.edu.in/](https://tis.edu.in/)).
+A production-ready redesign of the **Tula's International School** official homepage ([tis.edu.in](https://tis.edu.in/)). The repository contains a Next.js frontend and a small, independently runnable Node.js admissions API, organized in one modular `src/` tree.
 
-Developed according to high-converting modern education aesthetics, preserving TIS branding, official copy, verified ranking accolades, and Modern Gurukul heritage.
+## Project structure
 
----
-
-## Repository Structure
-
-```
-tis-redesign/
-├── frontend/
-│   ├── app/                    # Next.js 14 App Router (layout, page)
+```text
+.
+├── public/                     # Static assets and robots.txt
+├── src/
+│   ├── app/                    # Next.js App Router pages, layout, and metadata
 │   ├── components/
-│   │   ├── ui/                 # Reusable atomic UI (Button, Badge, Modal, ThemeToggle)
-│   │   ├── layout/             # Navbar, Footer, ScrollProgress
-│   │   ├── sections/           # 9 Homepage Sections (Hero, About, WhyTis, Academics, etc.)
-│   │   └── animation/          # CustomCursor, Reveal, Stagger
-│   ├── hooks/                  # useTheme, useReducedMotion, useWindowSize
-│   ├── data/                   # tis-data.ts (Authentic TIS information source of truth)
-│   ├── public/                 # Static assets and robots.txt
-│   ├── styles/                 # Tailwind CSS & global styles
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── README.md
-│
-├── backend/
-│   ├── src/
-│   │   ├── routes/             # Admissions routing
-│   │   ├── controllers/        # Admissions controller
-│   │   ├── services/           # Notification alerts service
-│   │   ├── models/             # Enquiry data model
-│   │   └── server.js           # Minimal zero-dependency HTTP server
-│   ├── package.json
-│   └── README.md
-│
-└── README.md                   # Project overview & technical documentation
+│   │   ├── ui/                 # Reusable interface primitives
+│   │   ├── layout/             # Navbar, footer, and scroll progress
+│   │   ├── sections/           # Homepage content sections
+│   │   └── animation/          # Cursor and reveal animation components
+│   ├── hooks/                  # Shared React hooks
+│   ├── data/                   # School content and static data
+│   ├── lib/                    # Shared frontend utilities
+│   ├── styles/                 # Global styles
+│   └── server/
+│       ├── routes/             # Admissions and health route dispatch
+│       ├── controllers/        # HTTP request handlers and validation
+│       ├── services/           # Notification service
+│       ├── models/             # Admission enquiry model
+│       └── server.js           # Node.js HTTP server entry point
+├── package.json                # Root frontend and backend scripts
+└── README.md
 ```
 
----
+The frontend remains a Next.js App Router application in `src/app`. Backend routes, controllers, services, and models remain separate modules under `src/server`; they are not combined into one file.
 
-## Key Highlights & Standout Features
+## Tech stack
 
-| Feature | Implementation Details |
-|---|---|
-| **Custom Animated Cursor** | Desktop-only spring follower powered by Framer Motion `useSpring`. Expands on interactive links/buttons/inputs. Automatically disabled on mobile touch screens and when `prefers-reduced-motion` is active. |
-| **Scroll-Triggered Reveals** | Framer Motion `whileInView` with `viewport={{ once: true }}` ensuring buttery 60fps scrolling. Smooth cubic-bezier transitions between 0.3s and 0.5s. |
-| **Animated Theme Switcher** | Sun/Moon morphing toggle with `localStorage` persistence, fallback to system preferences, and zero hydration mismatch. |
-| **Top Scroll-Progress Bar** | Framer Motion `useScroll` with a tri-color brand gradient (`TIS Crimson` -> `TIS Gold` -> `TIS Teal`). |
-| **360° Virtual Tour Modal** | Multi-tab interactive tour switcher for Aerial View, Residential Wings, and Olympic Sports Arena. |
-| **Interactive Admissions Form** | High-converting enquiry system with Class selection, State dropdown, OTP verification simulation, and confetti celebration. |
-| **Authentic School Content** | Real verified rankings (#1 in Dehradun by Education Today, #1 in North India by Outlook), 16+ sports, student quotes, and parent testimonials from `tis.edu.in`. |
+- Next.js 14 App Router, React 18, and TypeScript
+- Tailwind CSS 3.4 and Framer Motion 11
+- Lucide React icons and `canvas-confetti`
+- A zero-dependency Node.js HTTP service for admissions enquiries
 
----
+## Local development
 
-## Quick Start Guide
-
-### 1. Frontend (Next.js + TypeScript + Tailwind + Framer Motion)
+Install dependencies once from the repository root:
 
 ```bash
-cd frontend
 npm install
+```
+
+Start the frontend at [http://localhost:3000](http://localhost:3000):
+
+```bash
 npm run dev
 ```
 
-App will be live at `http://localhost:3000`.
+Start the admissions API separately at [http://localhost:5000](http://localhost:5000):
 
-To create a production build:
 ```bash
+npm run backend:dev
+```
+
+Use `npm run backend:start` to run the backend without watch mode. Its endpoints are:
+
+- `POST /api/admissions/enquire` - submit an admission enquiry
+- `GET /api/health` (or `/`) - health check
+
+## Build and run
+
+```bash
+npm run lint
 npm run build
 npm start
 ```
 
-### 2. Backend (Minimal Node.js Service)
+The frontend can be deployed to Vercel from the repository root; no separate frontend root directory is needed.
 
-```bash
-cd backend
-npm start
-```
+## Features
 
-Server listens on `http://localhost:5000`.
-
----
-
-## Technical Decisions & Architecture
-
-1. **Next.js 14 App Router**: Provides modern server-rendered HTML for fast First Contentful Paint (FCP) and optimal SEO with comprehensive Open Graph and Twitter cards.
-2. **Separation of Concerns**: Kept atomic UI components (`/components/ui/`), layout shells (`/components/layout/`), animated wrappers (`/components/animation/`), and page sections (`/components/sections/`) strictly isolated for maintainability and technical interview review.
-3. **Authentic Data Layer (`/data/tis-data.ts`)**: Rather than hardcoding text throughout components, all verified facts, rankings, sports descriptions, testimonials, and campus highlights are consolidated into typed data structures.
-4. **Performance & Accessibility**:
-   - Zero horizontal overflow across 375px, 768px, and 1280px+ viewports.
-   - Reduced-motion accessibility checks embedded in cursor and scroll reveals.
-   - Semantic HTML tags (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>`).
-   - Standard ARIA labels on all modal controls, theme toggles, and mobile drawer triggers.
-
----
-
-## Deployment to Vercel
-
-The frontend is ready for 1-click deployment on [Vercel](https://vercel.com/):
-1. Connect this repository to Vercel.
-2. Set Root Directory to `frontend`.
-3. Vercel will automatically detect Next.js and run `npm run build`.
+- Animated, responsive school homepage with reduced-motion support
+- Light/dark theme toggle with saved preference
+- Scroll reveals, custom cursor, and scroll-progress indicator
+- Campus tour modal, gallery, testimonials, and admissions enquiry form
+- Modular components, hooks, and school content data
